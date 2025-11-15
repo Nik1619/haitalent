@@ -1,0 +1,37 @@
+# version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: qna_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    working_dir: /app/qna_project 
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=qna_db
+      - DB_USER=qna_user
+      - DB_PASSWORD=qna_pass
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DEBUG=True
+
+  db:
+    image: postgres:16
+    container_name: qna_db
+    restart: always
+    environment:
+      - POSTGRES_DB=qna_db
+      - POSTGRES_USER=qna_user
+      - POSTGRES_PASSWORD=qna_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
